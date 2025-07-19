@@ -15,12 +15,6 @@ model User {
     role Role
 }
 
-// for security, one valid session at a time
-model Session {
-    id String @id
-    cookie String @unique
-}
-
 enum Role {
     Admin
     User
@@ -29,4 +23,25 @@ enum Role {
 enum IDType {
     NIK
     KTA
+}
+
+// for security, one valid session at a time
+model Session {
+    id String @id
+    cookie String @unique
+}
+
+model Event {
+    id Int @id @default(autoincrement())
+    name String
+    startEpoch Int
+    endEpoch Int
+    winnerID String?
+    candidateIDs String[]
+}
+
+model Candidate {
+    id String @id
+    name String
+    description String
 }
