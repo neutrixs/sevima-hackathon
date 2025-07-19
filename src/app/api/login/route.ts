@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         message: "success"
     }, {
         headers: {
-            'Set-Cookie': `session=${cookie}; SameSite=Strict`
+            'Set-Cookie': `session=${cookie}; SameSite=Strict; Path=/`
         }
     })
 }
