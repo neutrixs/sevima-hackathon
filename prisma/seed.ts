@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 async function main() {
     const adminPassword = "admin123"
     const hash = await hasher(adminPassword)
-    const admin = prisma.user.upsert({
+    const admin = await prisma.user.upsert({
         where: {
             id: "0"
         },
