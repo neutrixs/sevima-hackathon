@@ -1,4 +1,5 @@
 import { compare } from "@/lib/hasher"
+import validate from "@/lib/postRequestValidator"
 import {prisma} from "@/lib/prisma"
 import { createSessionCookie } from "@/lib/session"
 
@@ -7,18 +8,10 @@ const invalidLoginResponse = Response.json({
 }, {status: 401})
 
 export async function POST(req: Request) {
-    if (req.headers.get('content-type') !== "application/json") return Response.json({
-        message: "content-type must be application/json"
-    }, {status: 400})
+    const validator = await validate(req, ["id", "password"])
+    if (!validator.valid) return validator.response
 
-    let body
-    try {
-        body = await req.json()
-    } catch (e) {
-        return Response.json({
-            message: e instanceof Error ? e.message : "JSON error"
-        }, {status: 400})
-    }
+    const body = validator.body
 
     const id = body.id
     const password = body.password
