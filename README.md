@@ -6,8 +6,12 @@
    ```bash
    docker compose up -d
    ```
+2. Setelah database berjalan, jalankan command ini untuk setup Prisma:
+   ```bash
+   npm run migrateDev
+   ```
 
-2. Setelah database berjalan, jalankan:
+2. Setelah itu, jalankan:
    ```bash
    npm run seed
    ```
