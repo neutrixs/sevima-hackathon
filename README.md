@@ -14,6 +14,7 @@
 2. Setelah itu, jalankan:
    ```bash
    npm run seed
+   npm run dev
    ```
 
 ## 👤 Akun Admin (dari seed)
