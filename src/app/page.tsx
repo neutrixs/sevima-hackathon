@@ -14,7 +14,6 @@ export interface APIResult {
 }
 
 function LogOut() {
-
     function out() {
         document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
         redirect("/login")
@@ -22,7 +21,7 @@ function LogOut() {
 
     return (
         <div className={styles.logout}>
-            <div onClick={out}>Logout</div>
+            <div onClick={out} className={styles.button}>Logout</div>
         </div>
     )
 }
@@ -39,16 +38,24 @@ export default function Home() {
             const eventsData = await eventsFetch.json() as APIResult[]
             setEventsData(eventsData)
             setIsLoaded(true)
+        })();
+
+        (async () => {
+            const response = await fetch("/api/events/allow-creation")
+            const allowed = await response.json()
+            setAllowCreateEvent(allowed)
         })()
     }, [])
 
     const [isLoaded, setIsLoaded] = useState(false)
+    const [allowCreateEvent, setAllowCreateEvent] = useState(false)
     const [eventsData, setEventsData] = useState<APIResult[]>([])
 
     return (
         <div className={styles.container}>
             <LogOut />
             <p>Events</p>
+            {allowCreateEvent ? <div className={styles.button}>Create event</div> : null}
             {!isLoaded ? <p>Loading...</p> : null}
             {eventsData.map(event => {
                 return <div key={event.id} className={styles.eventContainer}>
@@ -58,6 +65,7 @@ export default function Home() {
                     <p>Candidates: {event.candidates.join(", ")}</p>
                 </div>
             })}
+
         </div>
     );
 }
