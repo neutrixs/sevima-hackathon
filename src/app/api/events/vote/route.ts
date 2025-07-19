@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const idInt = parseInt(eventID)
 
     // check if candidate exists
-    const exist = await prisma.event.findFirst({
+    const event = await prisma.event.findFirst({
         where: {
             id: idInt,
             candidateIDs: {
@@ -42,9 +42,15 @@ export async function POST(req: Request) {
         }
     })
 
-    if (!exist) return Response.json({
+    if (!event) return Response.json({
         message: "candidate doesn't exist"
     }, {status: 400})
+
+    // check if the event is still active
+    const currentTime = Math.floor(new Date().getTime() / 1000)
+    if (event.startEpoch > currentTime || currentTime >= event.endEpoch) return Response.json({
+        message: "event does not allow voting as of now"
+    }, {status: 403})
 
     const result = await prisma.vote.create({
         data: {
