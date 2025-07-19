@@ -17,6 +17,8 @@ async function main() {
             hash
         }
     })
+
+    console.log(admin)
 }
 
 main().then(async () => {

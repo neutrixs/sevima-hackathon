@@ -15,6 +15,12 @@ model User {
     role Role
 }
 
+// for security, one valid session at a time
+model Session {
+    id String @id
+    cookie String @unique
+}
+
 enum Role {
     Admin
     User
