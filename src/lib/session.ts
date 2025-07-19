@@ -1,6 +1,20 @@
 import {prisma} from "@/lib/prisma"
+import parseCookie from "@/lib/cookieParser" 
 const LENGTH = 16
 const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
+
+export async function getUserID(req: Request) {
+    const cookie = parseCookie(req.headers.get("cookie") || "")
+    if (!cookie.session) return false
+
+    const session = await prisma.session.findFirst({
+        where: {
+            cookie: cookie.session
+        }
+    })
+
+    return session?.id || false
+}
 
 export async function createSessionCookie(id: string) {
     let cookie = ""

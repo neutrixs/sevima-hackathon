@@ -1,6 +1,7 @@
 import parseCookie from "@/lib/cookieParser";
 import validate from "@/lib/postRequestValidator";
 import {prisma} from "@/lib/prisma"
+import { getUserID } from "@/lib/session";
 
 // we also check if they're "Admin" (only admin can create events)
 async function sufficientPermission(id: string) {
@@ -14,21 +15,8 @@ async function sufficientPermission(id: string) {
     return !!user
 }
 
-async function validCredential (req: Request) {
-    const cookie = parseCookie(req.headers.get("cookie") || "")
-    if (!cookie.session) return false
-
-    const session = await prisma.session.findFirst({
-        where: {
-            cookie: cookie.session
-        }
-    })
-
-    return session?.id || false
-}
-
 export async function POST(req: Request) {
-    const userID = await validCredential(req)
+    const userID = await getUserID(req)
     if (!userID) return Response.json({
         message: "invalid credential"
     }, {status: 401})
