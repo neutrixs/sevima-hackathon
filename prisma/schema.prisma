@@ -45,3 +45,11 @@ model Candidate {
     name String
     description String
 }
+
+model Vote {
+    id Int @id @default(autoincrement())
+    userID String
+    eventID String
+    candidateID String
+    createdAtEpoch Int
+}
