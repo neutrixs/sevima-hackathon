@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     const voteExist = await prisma.vote.findFirst({
         where: {
-            eventID,
+            eventID: eventID.toString(),
             userID
         }
     })
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     const result = await prisma.vote.create({
         data: {
             candidateID,
-            eventID,
+            eventID: eventID.toString(),
             userID,
             createdAtEpoch: Math.floor(new Date().getTime() / 1000)
         }

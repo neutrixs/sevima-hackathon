@@ -5,6 +5,7 @@ import getCookie from "./scripts/cookie";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { redirect } from "next/navigation";
 import CreateMenu from "./createMenu";
+import VoteMenu from "./voteMenu";
 
 export interface APIResult {
     eventName: string
@@ -35,6 +36,8 @@ export default function Home() {
     const [allowCreateEvent, setAllowCreateEvent] = useState(false)
     const [eventsData, setEventsData] = useState<APIResult[]>([])
     const [createMenuOpened, setCreateMenuOpened] = useState(false)
+    const [voteMenuOpened, setVoteMenuOpened] = useState(false)
+    const [voteID, setVoteID] = useState(0)
     
     useEffect(() => {
         const cookie = getCookie("session")
@@ -85,13 +88,17 @@ export default function Home() {
                         <p>To: {new Date(event.end * 1000).toLocaleString('en-GB')}</p>
                         <p>Candidates: {event.candidates.map(c=>c.name).join(", ")}</p>
                         <div>
-                            {canVoteNow(event) ? <div className={styles.button}>Vote</div> : null}
+                            {canVoteNow(event) ? <div className={styles.button} onClick={() => {
+                                setVoteMenuOpened(true)
+                                setVoteID(event.id)
+                            }}>Vote</div> : null}
                         </div>
                     </div>
                 })}
 
             </div>
             {createMenuOpened ? <CreateMenu setOpened={setCreateMenuOpened} refresh={updateData} /> : null}
+            {voteMenuOpened ? <VoteMenu id={voteID} setOpened={setVoteMenuOpened} eventData={eventsData.find(a => a.id == voteID) as APIResult} /> : null}
         </>
     );
 }
