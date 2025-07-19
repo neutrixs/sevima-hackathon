@@ -4,7 +4,10 @@ export interface APIResult {
     eventName: string
     start: number
     end: number
-    candidates: string[]
+    candidates: {
+        id: string,
+        name: string
+    }[]
     id: number
 }
 
@@ -14,7 +17,7 @@ export async function GET(req: Request) {
     const result: APIResult[] = []
 
     for (const event of events) {
-        const candidates: string[] = []
+        const candidates: {id: string, name:string}[] = []
 
         for (const candidateID of event.candidateIDs) {
             const candidate = await prisma.user.findFirst({
@@ -23,7 +26,10 @@ export async function GET(req: Request) {
                 }
             })
 
-            if (candidate) candidates.push(candidate.name)
+            if (candidate) candidates.push({
+                id: candidate.id,
+                name: candidate.name,
+            })
         }
 
         result.push({

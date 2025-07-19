@@ -10,7 +10,10 @@ export interface APIResult {
     eventName: string
     start: number
     end: number
-    candidates: string[]
+    candidates: {
+        id: string,
+        name: string
+    }[]
     id: number
 }
 
@@ -28,6 +31,11 @@ function LogOut() {
 }
 
 export default function Home() {
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [allowCreateEvent, setAllowCreateEvent] = useState(false)
+    const [eventsData, setEventsData] = useState<APIResult[]>([])
+    const [createMenuOpened, setCreateMenuOpened] = useState(false)
+    
     useEffect(() => {
         const cookie = getCookie("session")
         if (!cookie) {
@@ -43,11 +51,6 @@ export default function Home() {
         })()
     }, [])
 
-    const [isLoaded, setIsLoaded] = useState(false)
-    const [allowCreateEvent, setAllowCreateEvent] = useState(false)
-    const [eventsData, setEventsData] = useState<APIResult[]>([])
-    const [createMenuOpened, setCreateMenuOpened] = useState(false)
-
     async function updateData() {
         const eventsFetch = await fetch("/api/events/get")
         const eventsData = await eventsFetch.json() as APIResult[]
@@ -57,6 +60,15 @@ export default function Home() {
 
     function openCreateMenu() {
         setCreateMenuOpened(true)
+    }
+
+    function canVoteNow(event: APIResult) {
+        const ctime = new Date().getTime() / 1000
+
+        if (ctime >= event.start && ctime < event.end) {
+            return true
+        }
+        return false
     }
 
     return (
@@ -71,7 +83,10 @@ export default function Home() {
                         <p>{event.eventName}</p>
                         <p>From: {new Date(event.start * 1000).toLocaleString('en-GB')}</p>
                         <p>To: {new Date(event.end * 1000).toLocaleString('en-GB')}</p>
-                        <p>Candidates: {event.candidates.join(", ")}</p>
+                        <p>Candidates: {event.candidates.map(c=>c.name).join(", ")}</p>
+                        <div>
+                            {canVoteNow(event) ? <div className={styles.button}>Vote</div> : null}
+                        </div>
                     </div>
                 })}
 

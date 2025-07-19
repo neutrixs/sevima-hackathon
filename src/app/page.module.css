@@ -26,10 +26,11 @@
 }
 
 .button {
-    background-color: #808080;
+    background-color: #008080;
     border-radius: 0.5em;
     padding: 0.5em;
     cursor: pointer;
+    width: max-content;
 }
 
 .popup {
