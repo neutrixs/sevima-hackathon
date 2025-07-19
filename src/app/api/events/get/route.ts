@@ -5,6 +5,7 @@ export interface APIResult {
     start: number
     end: number
     candidates: string[]
+    id: number
 }
 
 export async function GET(req: Request) {
@@ -29,7 +30,8 @@ export async function GET(req: Request) {
             eventName: event.name,
             start: event.startEpoch,
             end: event.endEpoch,
-            candidates
+            candidates,
+            id: event.id
         })
     }
 
