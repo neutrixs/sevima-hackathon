@@ -2,8 +2,9 @@
 
 import styles from "./page.module.css";
 import getCookie from "./scripts/cookie";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { redirect } from "next/navigation";
+import CreateMenu from "./createMenu";
 
 export interface APIResult {
     eventName: string
@@ -33,12 +34,7 @@ export default function Home() {
             redirect("/login")
         }
 
-        (async () => {
-            const eventsFetch = await fetch("/api/events/get")
-            const eventsData = await eventsFetch.json() as APIResult[]
-            setEventsData(eventsData)
-            setIsLoaded(true)
-        })();
+        updateData();
 
         (async () => {
             const response = await fetch("/api/events/allow-creation")
@@ -50,22 +46,37 @@ export default function Home() {
     const [isLoaded, setIsLoaded] = useState(false)
     const [allowCreateEvent, setAllowCreateEvent] = useState(false)
     const [eventsData, setEventsData] = useState<APIResult[]>([])
+    const [createMenuOpened, setCreateMenuOpened] = useState(false)
+
+    async function updateData() {
+        const eventsFetch = await fetch("/api/events/get")
+        const eventsData = await eventsFetch.json() as APIResult[]
+        setEventsData(eventsData)
+        setIsLoaded(true)
+    }
+
+    function openCreateMenu() {
+        setCreateMenuOpened(true)
+    }
 
     return (
-        <div className={styles.container}>
-            <LogOut />
-            <p>Events</p>
-            {allowCreateEvent ? <div className={styles.button}>Create event</div> : null}
-            {!isLoaded ? <p>Loading...</p> : null}
-            {eventsData.map(event => {
-                return <div key={event.id} className={styles.eventContainer}>
-                    <p>{event.eventName}</p>
-                    <p>From: {new Date(event.start * 1000).toLocaleString('en-GB')}</p>
-                    <p>To: {new Date(event.end * 1000).toLocaleString('en-GB')}</p>
-                    <p>Candidates: {event.candidates.join(", ")}</p>
-                </div>
-            })}
+        <>
+            <div className={styles.container}>
+                <LogOut />
+                <p>Events</p>
+                {allowCreateEvent ? <div className={styles.button} onClick={openCreateMenu}>Create event</div> : null}
+                {!isLoaded ? <p>Loading...</p> : null}
+                {eventsData.map(event => {
+                    return <div key={event.id} className={styles.eventContainer}>
+                        <p>{event.eventName}</p>
+                        <p>From: {new Date(event.start * 1000).toLocaleString('en-GB')}</p>
+                        <p>To: {new Date(event.end * 1000).toLocaleString('en-GB')}</p>
+                        <p>Candidates: {event.candidates.join(", ")}</p>
+                    </div>
+                })}
 
-        </div>
+            </div>
+            {createMenuOpened ? <CreateMenu setOpened={setCreateMenuOpened} refresh={updateData} /> : null}
+        </>
     );
 }
