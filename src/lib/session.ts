@@ -12,7 +12,9 @@ export async function createSessionCookie(id: string) {
         where: {
             id
         },
-        update: {},
+        update: {
+            cookie
+        },
         create: {
             id,
             cookie
