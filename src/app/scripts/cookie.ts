@@ -1,6 +1,6 @@
-export default function getCookie(cookiename: string) {
-    // Get name followed by anything except a semicolon
-    var cookiestring=RegExp(cookiename+"=[^;]+").exec(document.cookie);
-    // Return everything after the equal sign, or an empty string if the cookie name not found
-    return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
+export default function getCookie(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  //@ts-ignore
+  if (parts.length === 2) return parts.pop().split(';').shift();
 }
