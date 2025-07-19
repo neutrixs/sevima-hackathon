@@ -2,7 +2,7 @@
 
 import styles from "./page.module.css";
 import getCookie from "./scripts/cookie";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 
 export default function Home() {
@@ -13,7 +13,12 @@ export default function Home() {
         }
     }, [])
 
+    const [isLoaded, setIsLoaded] = useState(false)
+
     return (
-            <p>AAAAA</p>
+        <div className={styles.container}>
+            <p>Events</p>
+            {!isLoaded ? <p>Loading...</p> : null}
+        </div>
     );
 }
