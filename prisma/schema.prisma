@@ -9,7 +9,7 @@ generator client {
 
 model User {
     id String @id
-    idType IDType
+    idType IDType @default(NIK)
     name String
     hash String
     role Role
