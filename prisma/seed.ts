@@ -18,7 +18,35 @@ async function main() {
         }
     })
 
-    console.log(admin)
+    const dummyUserPassword = "user123"
+    const dummyUserHash = await hasher(dummyUserPassword)
+    const user1 = await prisma.user.upsert({
+        where: {
+            id: "1111222233334444"
+        },
+        update: {},
+        create: {
+            id: "1111222233334444",
+            name: "steven",
+            role: "User",
+            hash: dummyUserHash
+        }
+    })
+
+    const user2 = await prisma.user.upsert({
+        where: {
+            id: "1111222233334445"
+        },
+        update: {},
+        create: {
+            id: "1111222233334444",
+            name: "kevin",
+            role: "User",
+            hash: dummyUserHash
+        }
+    })
+
+    console.log({admin, user1, user2})
 }
 
 main().then(async () => {
